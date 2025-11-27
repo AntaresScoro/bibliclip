@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Clip } from './interfaces/clip.interface';
 
 @Injectable()
@@ -6,10 +6,13 @@ export class ClipsService {
   private readonly clips: Clip[] = [];
 
   create(clip: Clip) {
-    clip._id = String(Number(this.clips.length) + 1);
-    clip._createdAt = new Date();
-    this.clips.push(clip);
-    return clip;
+    const newClip = {
+      ...clip,
+      _id: String(Number(this.clips.length) + 1),
+      _createdAt: new Date()
+    }
+    this.clips.push(newClip);
+    return newClip;
   }
 
   findOne(id: string): Clip | undefined {
@@ -21,14 +24,18 @@ export class ClipsService {
   }
 
   delete(id: string): any {
-    return this.clips.splice(this.clips.findIndex((clip: Clip) => clip._id === id), 1);
+    const index = this.clips.findIndex((clip: Clip) => clip._id === id);
+    if (index === -1) {
+      throw new NotFoundException(`Clip with id ${id} not found`);
+    }
+    return this.clips.splice(index, 1);
   }
 
   updateOne(id: string, clip: Clip): Clip {
     const index = this.clips.findIndex((c: Clip) => c._id === id);
 
     if (index === -1) {
-      throw new Error(`Clip with id ${id} not found`);
+      throw new NotFoundException(`Clip with id ${id} not found`);
     }
 
     this.clips[index] = {
