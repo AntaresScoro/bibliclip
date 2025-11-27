@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { ClipsService } from './clips.service';
 import { Clip } from './interfaces/clip.interface';
 
@@ -19,5 +19,10 @@ export class ClipsController {
   @Get()
   getClips(): Clip[] {
     return this.clipsService.findAll();
+  }
+
+  @Delete(':id')
+  delete(@Param() params: any): any {
+    return this.clipsService.delete(Number(params.id)).length >= 1 ? "L'élément à été supprimé" : "Rien n'a été supprimé";
   }
 }
