@@ -8,7 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     ClipsModule,
     MongooseModule.forRoot(
-      'mongodb://root:example@localhost:27018/nest-clips?authSource=admin',
+      'mongodb://root:example@localhost:27018/clip_sandbox?authSource=admin',
     ),
   ],
   controllers: [AppController],

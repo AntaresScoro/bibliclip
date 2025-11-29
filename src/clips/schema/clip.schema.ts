@@ -4,18 +4,18 @@ import { HydratedDocument } from 'mongoose';
 export type ClipDocument = HydratedDocument<Clip>;
 
 @Schema({
-  timestamps: true
+  timestamps: true,
 })
 export class Clip {
-  @Prop()
+  @Prop({ required: true })
   title: string;
   @Prop()
-  description: string;
-  @Prop()
+  description?: string;
+  @Prop({ required: true })
   url: string;
-  @Prop()
+  @Prop({ required: true })
   duration: number;
-  @Prop()
+  @Prop({ required: true })
   streamerName: string;
 }
 
