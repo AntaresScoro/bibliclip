@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Param,
-  Delete,
-  Patch, Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, } from '@nestjs/common';
 import { ClipsService } from './clips.service';
 import { CreateClipDto } from './dto/create-clip.dto';
 import { UpdateClipDto } from './dto/update-clip.dto';
@@ -29,13 +21,24 @@ export class ClipsController {
 
   @Get()
   async findAll(@Query() queryDto: GetClipsQueryDto): Promise<{
-    items: ClipDocument[];
-    total: number;
-    page: number;
-    limit: number;
-    pageCount: number;
+    data : ClipDocument[];
+    meta : {
+      total: number;
+      page: number;
+      limit: number;
+      pageCount: number;
+    };
   }> {
-    return this.clipsService.findAll(queryDto);
+    const clips = await this.clipsService.findAll(queryDto);
+    return {
+      data: clips.items,
+      meta: {
+        total: clips.total,
+        page: clips.page,
+        limit: clips.limit,
+        pageCount: clips.pageCount,
+      },
+    };
   }
 
   @Delete(':id')
