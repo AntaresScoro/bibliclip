@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-// import { Clip } from './interfaces/clip.interface';
 import { CreateClipDto } from './dto/create-clip.dto';
 import { UpdateClipDto } from './dto/update-clip.dto';
 import { GetClipsQueryDto } from './dto/get-clips-query.dto';
@@ -31,18 +30,25 @@ export class ClipsService {
     limit: number;
     pageCount: number;
   }> {
-    const page = query.page ? query.page : 1;
-    const limit = query.limit ? query.limit : 10;
-    const search = query.search ? [ { title: `/${query.search}/i` }, { description: `/${query.search}/i` } ] : [];
-    const items = await this.clipModel.find(
-        {
-          streamerName: query.streamerName,
-          $or: search
-        })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .exec();
-    const total = items.length;
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    let filter : Record<string, any> = {};
+    if (query.streamerName) {
+      filter.streamerName = query.streamerName;
+    }
+    if (query.search) {
+      filter.$or =
+      [
+        { title: new RegExp(query.search, 'i') },
+        { description: new RegExp(query.search, 'i') },
+      ]
+    }
+
+    const items = await this.clipModel.find(filter)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .exec();
+    const total = await this.clipModel.countDocuments(filter).exec();
     return {
       items: items,
       total: total,
