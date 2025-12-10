@@ -72,4 +72,20 @@ export class ClipsService {
     if (modifiedClip) return modifiedClip;
     throw new NotFoundException(`Clip with id ${id} not found`);
   }
+
+  async publish(id: string): Promise<ClipDocument> {
+    const modifiedClip = await this.clipModel
+      .findByIdAndUpdate(id, { isPublished: true }, { new: true })
+      .exec();
+    if (modifiedClip) return modifiedClip;
+    throw new NotFoundException(`Clip with id ${id} not found`);
+  }
+
+  async unpublish(id: string): Promise<ClipDocument> {
+    const modifiedClip = await this.clipModel
+      .findByIdAndUpdate(id, { isPublished: false }, { new: true })
+      .exec();
+    if (modifiedClip) return modifiedClip;
+    throw new NotFoundException(`Clip with id ${id} not found`);
+  }
 }

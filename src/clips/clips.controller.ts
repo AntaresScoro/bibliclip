@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ClipsService } from './clips.service';
 import { CreateClipDto } from './dto/create-clip.dto';
 import { UpdateClipDto } from './dto/update-clip.dto';
@@ -21,8 +30,8 @@ export class ClipsController {
 
   @Get()
   async findAll(@Query() queryDto: GetClipsQueryDto): Promise<{
-    data : ClipDocument[];
-    meta : {
+    data: ClipDocument[];
+    meta: {
       total: number;
       page: number;
       limit: number;
@@ -52,6 +61,16 @@ export class ClipsController {
     @Param('id') id: string,
     @Body() clip: UpdateClipDto,
   ): Promise<ClipDocument> {
-    return await this.clipsService.updateOne(id, clip);
+    return this.clipsService.updateOne(id, clip);
+  }
+
+  @Patch(':id/publish')
+  async publish(@Param('id') id: string): Promise<ClipDocument> {
+    return this.clipsService.publish(id);
+  }
+
+  @Patch(':id/unpublish')
+  async unpublish(@Param('id') id: string): Promise<ClipDocument> {
+    return this.clipsService.unpublish(id);
   }
 }

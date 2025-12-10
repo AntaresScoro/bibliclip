@@ -17,6 +17,8 @@ export class Clip {
   duration: number;
   @Prop({ required: true })
   streamerName: string;
+  @Prop({ default: false})
+  isPublished: boolean;
 }
 
 export const ClipSchema = SchemaFactory.createForClass(Clip);
