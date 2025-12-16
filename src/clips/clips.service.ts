@@ -43,6 +43,10 @@ export class ClipsService {
         { description: new RegExp(query.search, 'i') },
       ]
     }
+    if (query.isPublished !== undefined) {
+      console.log(query.isPublished);
+      filter.isPublished = query.isPublished;
+    }
 
     const items = await this.clipModel.find(filter)
     .skip((page - 1) * limit)

@@ -29,7 +29,7 @@ export class ClipsController {
   }
 
   @Get()
-  async findAll(@Query() queryDto: GetClipsQueryDto): Promise<{
+  async findAll(@Query() query: GetClipsQueryDto): Promise<{
     data: ClipDocument[];
     meta: {
       total: number;
@@ -38,7 +38,7 @@ export class ClipsController {
       pageCount: number;
     };
   }> {
-    const clips = await this.clipsService.findAll(queryDto);
+    const clips = await this.clipsService.findAll(query);
     return {
       data: clips.items,
       meta: {
