@@ -44,7 +44,6 @@ export class ClipsService {
       ]
     }
     if (query.isPublished !== undefined) {
-      console.log(query.isPublished);
       filter.isPublished = query.isPublished;
     }
 
