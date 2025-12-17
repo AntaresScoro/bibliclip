@@ -8,16 +8,19 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     UsersModule,
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        expire: configService.get<string>('JWT_EXPIRES_IN'),
+        signOptions: {
+          expiresIn: configService.get<number>('JWT_EXPIRES_IN'),
+        },
       }),
       inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, ConfigService],
 })
 export class AuthModule {}
