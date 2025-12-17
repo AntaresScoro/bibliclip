@@ -9,5 +9,5 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString()
-  displayName: string;
+  displayName?: string;
 }
