@@ -8,7 +8,7 @@ interface JwtPayload {
   email: string;
 }
 
-interface ValidatedUser {
+export interface ValidatedUser {
   userId: string;
   email: string;
 }
@@ -33,10 +33,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!payload?.sub || !payload?.email) {
       throw new UnauthorizedException('Invalid JWT payload');
     }
-
-    return {
+    const user: ValidatedUser = {
       userId: payload.sub,
       email: payload.email,
     };
+    return user;
   }
 }
