@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import * as mongoose from 'mongoose';
+import { User } from '../../users/schema/user.schema';
 
-export type ClipDocument = HydratedDocument<Clip>;
+export type ClipDocument = mongoose.HydratedDocument<Clip>;
 
 @Schema({
   timestamps: true,
@@ -19,6 +20,13 @@ export class Clip {
   streamerName: string;
   @Prop({ default: false })
   isPublished: boolean;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User.name,
+    required: false,
+    index: true,
+  })
+  owner: User | mongoose.Types.ObjectId;
 }
 
 export const ClipSchema = SchemaFactory.createForClass(Clip);

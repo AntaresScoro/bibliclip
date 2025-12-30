@@ -28,7 +28,7 @@ export class ClipsController {
     @Body() clip: CreateClipDto,
   ): Promise<ClipDocument> {
     console.log(req.user);
-    return this.clipsService.create(clip);
+    return this.clipsService.create(clip, req.user);
   }
 
   @Get(':id')
