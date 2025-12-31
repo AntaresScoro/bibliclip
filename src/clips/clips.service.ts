@@ -5,7 +5,6 @@ import { CreateClipDto } from './dto/create-clip.dto';
 import { UpdateClipDto } from './dto/update-clip.dto';
 import { GetClipsQueryDto } from './dto/get-clips-query.dto';
 import { Clip, ClipDocument } from './schema/clip.schema';
-import { User } from '../users/schema/user.schema';
 
 @Injectable()
 export class ClipsService {

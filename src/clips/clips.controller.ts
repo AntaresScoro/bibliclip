@@ -16,6 +16,7 @@ import { UpdateClipDto } from './dto/update-clip.dto';
 import { GetClipsQueryDto } from './dto/get-clips-query.dto';
 import { ClipDocument } from './schema/clip.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ClipOwnerGuard } from './guards/clip-owner.guard';
 
 @Controller('clips')
 export class ClipsController {
@@ -73,7 +74,7 @@ export class ClipsController {
     return this.clipsService.updateOne(id, clip);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ClipOwnerGuard)
   @Patch(':id/publish')
   async publish(@Param('id') id: string): Promise<ClipDocument> {
     return this.clipsService.publish(id);
