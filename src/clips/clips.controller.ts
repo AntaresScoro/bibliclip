@@ -18,6 +18,10 @@ import { ClipDocument } from './schema/clip.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ClipOwnerGuard } from './guards/clip-owner.guard';
 
+type RequestWithUser = {
+  user: { userId: string };
+};
+
 @Controller('clips')
 export class ClipsController {
   constructor(private readonly clipsService: ClipsService) {}
@@ -25,7 +29,7 @@ export class ClipsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
-    @Request() req,
+    @Request() req: RequestWithUser,
     @Body() clip: CreateClipDto,
   ): Promise<ClipDocument> {
     return this.clipsService.create(clip, req.user.userId);
@@ -58,14 +62,14 @@ export class ClipsController {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ClipOwnerGuard)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<{ message: string }> {
     await this.clipsService.delete(id);
     return { message: "L'élément à été supprimé" };
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ClipOwnerGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -80,7 +84,7 @@ export class ClipsController {
     return this.clipsService.publish(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ClipOwnerGuard)
   @Patch(':id/unpublish')
   async unpublish(@Param('id') id: string): Promise<ClipDocument> {
     return this.clipsService.unpublish(id);

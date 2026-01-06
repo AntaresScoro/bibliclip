@@ -1,8 +1,18 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
-import { Observable, throttleTime } from 'rxjs';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Clip, ClipDocument } from '../schema/clip.schema';
 import { Model } from 'mongoose';
+
+type RequestWithUser = {
+  user: { userId: string };
+  params: { id: string };
+};
 
 @Injectable()
 export class ClipOwnerGuard implements CanActivate {
@@ -10,20 +20,21 @@ export class ClipOwnerGuard implements CanActivate {
     @InjectModel(Clip.name) private readonly clipModel: Model<ClipDocument>,
   ) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
+  canActivate(context: ExecutionContext): Promise<boolean> {
+    const request: RequestWithUser = context.switchToHttp().getRequest();
     return this.validateRequest(request);
   }
-  private async validateRequest(request: any) {
+
+  private async validateRequest(request: RequestWithUser) {
     const userId = request.user.userId;
     const clipId = request.params.id;
 
     const clip = await this.clipModel.findById(clipId).exec();
     if (clip && userId === String(clip.owner)) {
       return true;
+    } else if (!clip) {
+      throw new NotFoundException('Clip not found');
     }
-    throw new ForbiddenException();
+    throw new ForbiddenException('You are not the owner of this clip');
   }
 }
