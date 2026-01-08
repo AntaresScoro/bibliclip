@@ -2,7 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../users/schema/user.schema';
 
-export type ClipDocument = mongoose.HydratedDocument<Clip>;
+export type ClipDocument = mongoose.HydratedDocument<Clip> & {
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 @Schema({
   timestamps: true,
